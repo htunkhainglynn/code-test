@@ -2,8 +2,6 @@ package com.test.code.entity;
 
 import com.test.code.dto.BookDto;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 
 @Data
@@ -67,6 +64,7 @@ public class Book {
         this.title = bookDto.getTitle();
         this.description = bookDto.getDescription();
         this.isbn = bookDto.getIsbn();
+        this.coverPhotoURL = bookDto.getImageUrl();
         this.language = bookDto.getLanguage();
         this.pages = bookDto.getPages();
         this.publisher = bookDto.getPublisher();

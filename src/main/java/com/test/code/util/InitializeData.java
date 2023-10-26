@@ -1,6 +1,5 @@
 package com.test.code.util;
 
-import com.test.code.entity.Author;
 import com.test.code.entity.Genre;
 import com.test.code.entity.Tag;
 import com.test.code.repo.AuthorRepo;
@@ -57,9 +56,7 @@ public class InitializeData {
                 "Western"
         );
 
-        genres.forEach(genre -> {
-            genreRepo.save(new Genre(genre));
-        });
+        genres.forEach(genre -> genreRepo.save(new Genre(genre)));
 
 
 
@@ -114,9 +111,7 @@ public class InitializeData {
                 "Action Thriller"
         );
 
-        tags.forEach(tag -> {
-            tagRepo.save(new Tag(tag));
-        });
+        tags.forEach(tag -> tagRepo.save(new Tag(tag)));
 
 //        List<String> authors = List.of(
 //                "J. K. Rowling",

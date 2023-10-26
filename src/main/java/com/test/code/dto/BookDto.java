@@ -34,6 +34,9 @@ public class BookDto {
     private MultipartFile image;
 
     private String imageUrl;
+
+    private String pdfUrl;
+
     private List<String> authors;
     private List<Integer> authorIds;
 

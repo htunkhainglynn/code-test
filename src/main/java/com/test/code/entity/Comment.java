@@ -1,10 +1,13 @@
 package com.test.code.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 
 @Entity
 @Data
@@ -22,6 +25,7 @@ public class Comment {
     @ManyToOne
     private Book book;
 
-    @ManyToOne
-    private User user;
+    @Email
+    @NotBlank(message = "Email is required")
+    private String email;
 }

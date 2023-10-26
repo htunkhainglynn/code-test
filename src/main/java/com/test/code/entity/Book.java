@@ -41,6 +41,8 @@ public class Book {
 //    @NotNull
     private String coverPhotoURL;
 
+    private String pdfURL;
+
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Author> authors;
 
@@ -69,6 +71,7 @@ public class Book {
         this.pages = bookDto.getPages();
         this.publisher = bookDto.getPublisher();
         this.publishedDate = bookDto.getPublishedDate();
+        this.pdfURL = bookDto.getPdfUrl();
 
         // if the book authors already don't exist in the database, then add them to the book
         if (!bookDto.getAuthors().isEmpty()) {

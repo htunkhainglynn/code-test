@@ -11,10 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/books")
@@ -46,5 +43,29 @@ public class BookApi {
 
         bookService.saveBook(bookDto);
         return ResponseEntity.status(201).build();
+    }
+
+    @GetMapping
+    @Operation(summary = "Get all books")
+    public ResponseEntity<Void> getAllBooks() {
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get a book by id")
+    public ResponseEntity<Void> getBookById(@PathVariable int id) {
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update a book by id")
+    public ResponseEntity<Void> updateBookById(@PathVariable int id) {
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a book by id")
+    public ResponseEntity<Void> deleteBookById(@PathVariable int id) {
+        return ResponseEntity.ok().build();
     }
 }

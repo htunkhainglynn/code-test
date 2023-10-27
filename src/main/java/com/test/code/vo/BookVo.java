@@ -13,7 +13,7 @@ public class BookVo {
     private String isbn;
     private String title;
     private String imageUrl;
-    private int rating;
+    private double rating;
     private int ratingCount;
     private List<String> authors;
     private List<String> genres;
@@ -25,7 +25,10 @@ public class BookVo {
         this.title = book.getTitle();
         this.imageUrl = book.getCoverPhotoURL();
         if (!book.getRatings().isEmpty()) {
-            this.rating = book.getRatings().stream().mapToInt(Rating::getRating).sum() / book.getRatings().size();
+            double sum = book.getRatings().stream().mapToDouble(Rating::getRating).sum();
+            double average = sum / book.getRatings().size();
+
+            this.rating = Double.parseDouble(String.format("%.1f", average));
         } else {
             this.rating = 0;
         }

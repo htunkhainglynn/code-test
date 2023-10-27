@@ -11,6 +11,9 @@ import java.util.List;
 
 @Data
 public class BookDto {
+
+    private Integer id;
+
     @NotBlank(message = "Title is required")
     private String title;
 
@@ -37,7 +40,7 @@ public class BookDto {
     private String imageUrl;
 
     private String pdfUrl;
-    
+
     private List<String> authors = new ArrayList<>();
 
     private List<Integer> authorIds = new ArrayList<>();

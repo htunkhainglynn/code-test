@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @Slf4j
@@ -26,7 +28,7 @@ public class CloudinaryService {
         this.cloudinary = cloudinary;
     }
 
-    public String uploadImageAndGetUrl(BookDto bookDto, HttpServletRequest request) throws Exception {
+    public String uploadImageAndGetUrl(HttpServletRequest request) throws Exception {
         MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) request;
         MultipartFile multipartFile = multipartHttpServletRequest.getFile("image");  // get image from request
 
@@ -69,4 +71,31 @@ public class CloudinaryService {
         return convFile;
     }
 
+    public void deleteImage(String url) {
+        try {
+            /* Extract the folder name using regular expression
+             * Example url : http://res.cloudinary.com/dk9fdcnnp/image/upload/v1629781233/books/1.png
+             * */
+            String pattern = "/v\\d+/(.*?)/[^/]+\\.\\w+";
+            Pattern regexPattern = Pattern.compile(pattern);
+            Matcher matcher = regexPattern.matcher(url);
+
+            if (matcher.find()) {
+                String folderName = matcher.group(1);
+
+                // Extract the public ID
+                String publicId = url.substring(url.lastIndexOf('/') + 1, url.lastIndexOf('.'));
+
+                // Construct full public ID
+                String fullPublicId = folderName + "/" + publicId;
+
+                // Delete the image using full public ID
+                cloudinary.uploader().destroy(fullPublicId, ObjectUtils.emptyMap());
+            } else {
+                throw new RuntimeException("Folder name not found in URL");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

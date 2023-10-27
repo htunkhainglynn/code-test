@@ -23,7 +23,7 @@ public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @NotNull
     private String title;
@@ -55,7 +55,7 @@ public class Book {
     private List<Rating> ratings = new ArrayList<>();
 
     @OneToMany(mappedBy = "book",
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE, CascadeType.DETACH},
             fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
@@ -95,6 +95,14 @@ public class Book {
 
     public void addTag(Tag tag) {
         this.tags.add(tag);
+    }
+
+    public void addRating(Rating rating) {
+        this.ratings.add(rating);
+    }
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
     }
 
 }

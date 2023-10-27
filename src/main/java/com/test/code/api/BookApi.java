@@ -40,13 +40,8 @@ public class BookApi {
     @Operation(summary = "Create a new book")
     public ResponseEntity<Void> createBook(@Validated BookDto bookDto, HttpServletRequest request) {
 
-        try {
-            String url = cloudinaryService.uploadImageAndGetUrl(bookDto, request);
-            log.info("Image url: {}", url);
-            bookDto.setImageUrl(url);
-        } catch (Exception e) {
-            throw new BookException("Error while uploading image");
-        }
+        // upload image to cloudinary
+        uploadImage(bookDto, request);
 
         bookService.saveBook(bookDto);
         return ResponseEntity.status(201).build();
@@ -72,13 +67,47 @@ public class BookApi {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a book by id", description = "Need to login")
-    public ResponseEntity<Void> updateBookById(@PathVariable int id) {
+    public ResponseEntity<Void> updateBookById(@PathVariable int id, @Validated BookDto bookDto, HttpServletRequest request) {
+        Optional<Book> book = bookService.getBookById(id);
+        if (book.isEmpty()) {
+            throw new BookException("Book not found");
+        }
+
+        // if new photo is uploaded
+        updateCoverPhoto(bookDto, request, book.get());
+
+        bookDto.setId(book.get().getId());
+
+        bookService.saveBook(bookDto);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete a book by id")
+    @Operation(summary = "Delete a book by id", description = "Need to login")
     public ResponseEntity<Void> deleteBookById(@PathVariable int id) {
-        return ResponseEntity.ok().build();
+        bookService.getBookCoverPhotoUrlById(id).ifPresent(cloudinaryService::deleteImage);
+
+        bookService.deleteBookById(id);
+        return ResponseEntity.status(204).build();
+    }
+
+    private void updateCoverPhoto(BookDto bookDto, HttpServletRequest request, Book book) {
+        if (!bookDto.getImage().isEmpty()) {
+            // delete old image
+            cloudinaryService.deleteImage(book.getCoverPhotoURL());
+
+            // update new image
+            uploadImage(bookDto, request);
+        }
+    }
+
+    private void uploadImage(BookDto bookDto, HttpServletRequest request) {
+        try {
+            String url = cloudinaryService.uploadImageAndGetUrl(request);
+            log.info("Image url: {}", url);
+            bookDto.setImageUrl(url);
+        } catch (Exception e) {
+            throw new BookException("Error while uploading image");
+        }
     }
 }

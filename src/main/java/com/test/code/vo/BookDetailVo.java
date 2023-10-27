@@ -1,10 +1,8 @@
 package com.test.code.vo;
 
 import com.test.code.entity.Book;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -20,7 +18,9 @@ public class BookDetailVo extends BookVo {
         super(book);
         this.summary = book.getSummary();
         this.pdfUrl = book.getPdfURL();
+        book.getComments().forEach(comment -> System.out.println(comment.getContent()));
         this.comments = book.getComments().stream().map(CommentVo::new).toList();
+
     }
 
 }

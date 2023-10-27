@@ -9,7 +9,7 @@ public class CommentVo {
     private String email;
 
     public CommentVo(Comment comment) {
-        this.content = comment.getContent();
         this.email = comment.getEmail();
+        this.content = comment.getContent();
     }
 }

@@ -12,8 +12,6 @@ import com.test.code.repo.TagRepo;
 import com.test.code.service.BookService;
 import com.test.code.vo.BookDetailVo;
 import com.test.code.vo.BookVo;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -46,9 +45,16 @@ public class BookServiceImpl implements BookService {
         this.authorRepo = authorRepo;
     }
 
+    @Transactional
     @Override
     public void saveBook(BookDto bookDto) {
         Book book = new Book(bookDto);
+
+        // update case
+        if (bookDto.getId() != null ) {
+            book.setId(bookDto.getId());
+        }
+
         List<Author> authors = new ArrayList<>();
         List<Genre> genres = new ArrayList<>();
         List<Tag> tags = new ArrayList<>();
@@ -62,13 +68,13 @@ public class BookServiceImpl implements BookService {
         }
 
         bookDto.getGenreIds().forEach(genreId -> {
-            Optional<Genre> genre = genreRepo.findById(genreId);
-            genre.ifPresent(genres::add);
+            Genre genre = genreRepo.getReferenceById(genreId);
+            genres.add(genre);
         });
 
         bookDto.getTagIds().forEach(tagId -> {
-            Optional<Tag> tag = tagRepo.findById(tagId);
-            tag.ifPresent(tags::add);
+            Tag tag = tagRepo.getReferenceById(tagId);
+            tags.add(tag);
         });
 
         // if the book authors already don't exist in the database, add them to the database too by using cascade
@@ -84,22 +90,26 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Page<BookVo> getAllBooks(String keyword, Optional<Integer> page, Optional<Integer> size) {
+
         PageRequest pageRequest = PageRequest.of(page.orElse(0), size.orElse(10));
 
         Specification<Book> specification = (root, query, cb) -> cb.conjunction();
 
         if (StringUtils.hasLength(keyword)) {
-            log.info("keyword: {}", keyword);
             specification = (root, query, cb) -> {
                 Subquery<Book> subquery = query.subquery(Book.class);
                 Root<Book> subRoot = subquery.from(Book.class);
 
+                String keywordLowerCase = keyword.toLowerCase().trim();
+
                 subquery.select(subRoot)
                         .where(cb.or(
-                                cb.like(cb.lower(subRoot.get("title")), "%" + keyword.toLowerCase() + "%"),
-                                cb.like(cb.lower(subRoot.get("isbn")), "%" + keyword.toLowerCase() + "%"),
-                                cb.like(cb.lower(subRoot.get("publisher")), "%" + keyword.toLowerCase() + "%"),
-                                cb.like(cb.lower(subRoot.get("authors").get("name")), "%" + keyword.toLowerCase() + "%")
+                                cb.like(cb.lower(subRoot.get("title")), "%" + keywordLowerCase + "%"),
+                                cb.like(cb.lower(subRoot.get("isbn")), "%" + keywordLowerCase + "%"),
+                                cb.like(cb.lower(subRoot.get("publisher")), "%" + keywordLowerCase + "%"),
+                                cb.like(cb.lower(subRoot.get("authors").get("name")), "%" + keywordLowerCase + "%"),
+                                cb.like(cb.lower(subRoot.get("tags").get("name")), "%" + keywordLowerCase + "%"),
+                                cb.like(cb.lower(subRoot.get("genres").get("name")), "%" + keywordLowerCase + "%")
                         ))
                         .distinct(true);
 
@@ -124,11 +134,27 @@ public class BookServiceImpl implements BookService {
         return bookDetailVo;
     }
 
+    @Transactional
+    @Override
+    public void deleteBookById(int id) {
+        bookRepo.deleteById(id);
+    }
+
+    @Override
+    public Optional<String> getBookCoverPhotoUrlById(int id) {
+        return bookRepo.findById(id).map(Book::getCoverPhotoURL);
+    }
+
+    @Override
+    public Optional<Book> getBookById(int id) {
+        return Optional.of(bookRepo.getReferenceById(id));
+    }
+
     private void calculateRelatedBooks(BookDetailVo bookDetailVo) {
         String genre = bookDetailVo.getGenres().get(0);
         String tag = bookDetailVo.getTags().get(0);
         String author = bookDetailVo.getAuthors().get(0);
-        int rating = bookDetailVo.getRating();
+        double rating = bookDetailVo.getRating();
 
         List<BookVo> booksByGenre = bookRepo.findByGenres(genre);
         List<BookVo> booksByTag = bookRepo.findByTags(tag);
@@ -137,6 +163,7 @@ public class BookServiceImpl implements BookService {
 
         List<BookVo> relatedBooks = Stream.of(booksByGenre, booksByTag, booksByAuthor, booksByRating)
                 .flatMap(List::stream)
+                .filter(book -> book.getId() != bookDetailVo.getId())
                 .distinct()
                 .limit(7)
                 .toList();

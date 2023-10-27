@@ -1,5 +1,6 @@
 package com.test.code.entity;
 
+import com.test.code.dto.CommentDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -7,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 
 @Entity
 @Data
@@ -28,4 +28,9 @@ public class Comment {
     @Email
     @NotBlank(message = "Email is required")
     private String email;
+
+    public Comment(CommentDto commentDto) {
+        this.content = commentDto.getComment();
+        this.email = commentDto.getEmail();
+    }
 }

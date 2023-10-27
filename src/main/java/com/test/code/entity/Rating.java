@@ -1,6 +1,8 @@
 package com.test.code.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,8 +19,14 @@ public class Rating {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private int rating;
+    @Min(1)
+    @Max(5)
+    private Integer rating;
 
     @ManyToOne
     private Book book;
+
+    public Rating(int rating) {
+        this.rating = rating;
+    }
 }

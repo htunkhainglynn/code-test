@@ -1,17 +1,24 @@
 package com.test.code.api;
 
 import com.test.code.dto.BookDto;
+import com.test.code.entity.Book;
 import com.test.code.exception.BookException;
 import com.test.code.service.BookService;
 import com.test.code.service.CloudinaryService;
+import com.test.code.util.PagerResult;
+import com.test.code.vo.BookDetailVo;
+import com.test.code.vo.BookVo;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/books")
@@ -46,19 +53,25 @@ public class BookApi {
     }
 
     @GetMapping
-    @Operation(summary = "Get all books")
-    public ResponseEntity<Void> getAllBooks() {
-        return ResponseEntity.ok().build();
+    @Operation(summary = "Get all books", description = "Need to login")
+    public ResponseEntity<PagerResult<BookVo>> getAllBooks(@RequestParam(required = false) String keyword,
+                                                  @RequestParam Optional<Integer> page,
+                                                  @RequestParam Optional<Integer> size) {
+
+        Page<BookVo> bookResult = bookService.getAllBooks(keyword, page, size);
+        PagerResult<BookVo> pagerResult = PagerResult.of(bookResult);
+        return ResponseEntity.ok().body(pagerResult);
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Get a book by id")
-    public ResponseEntity<Void> getBookById(@PathVariable int id) {
-        return ResponseEntity.ok().build();
+    @Operation(summary = "Get a book by id", description = "Need to login")
+    public ResponseEntity<BookDetailVo> getBookDetailById(@PathVariable int id) {
+        BookDetailVo bookDetailVo = bookService.getBookDetailById(id);
+        return ResponseEntity.ok().body(bookDetailVo);
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Update a book by id")
+    @Operation(summary = "Update a book by id", description = "Need to login")
     public ResponseEntity<Void> updateBookById(@PathVariable int id) {
         return ResponseEntity.ok().build();
     }

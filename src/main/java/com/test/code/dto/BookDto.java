@@ -6,6 +6,7 @@ import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -13,8 +14,8 @@ public class BookDto {
     @NotBlank(message = "Title is required")
     private String title;
 
-    @NotBlank(message = "Description is required")
-    private String description;
+    @NotBlank(message = "Summary is required")
+    private String summary;
 
     @NotNull(message = "ISBN is required")
     private String isbn;
@@ -36,13 +37,14 @@ public class BookDto {
     private String imageUrl;
 
     private String pdfUrl;
+    
+    private List<String> authors = new ArrayList<>();
 
-    private List<String> authors;
-    private List<Integer> authorIds;
+    private List<Integer> authorIds = new ArrayList<>();
 
     @NotNull(message = "Genre is required")
-    private List<Integer> genreIds;
+    private List<Integer> genreIds = new ArrayList<>();
 
     @NotNull(message = "Tag is required")
-    private List<Integer> tagIds;
+    private List<Integer> tagIds = new ArrayList<>();
 }

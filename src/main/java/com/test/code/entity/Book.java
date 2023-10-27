@@ -7,8 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -16,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Slf4j
 public class Book {
 
     @Id
@@ -25,7 +28,7 @@ public class Book {
     @NotNull
     private String title;
 
-    private String description;
+    private String summary;
 
     @Column(unique = true)
     private String isbn;
@@ -38,33 +41,33 @@ public class Book {
 
     private LocalDate publishedDate;
 
-//    @NotNull
+    @NotNull
     private String coverPhotoURL;
 
     private String pdfURL;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<Author> authors;
+    private List<Author> authors = new ArrayList<>();
 
     @OneToMany(mappedBy = "book",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
             fetch = FetchType.LAZY)
-    private List<Rating> ratings;
+    private List<Rating> ratings = new ArrayList<>();
 
     @OneToMany(mappedBy = "book",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
             fetch = FetchType.LAZY)
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     @ManyToMany
-    private List<Tag> tags;
+    private List<Tag> tags = new ArrayList<>();
 
     @ManyToMany
-    private List<Genre> genres;
+    private List<Genre> genres = new ArrayList<>();
 
     public Book(BookDto bookDto) {
         this.title = bookDto.getTitle();
-        this.description = bookDto.getDescription();
+        this.summary = bookDto.getSummary();
         this.isbn = bookDto.getIsbn();
         this.coverPhotoURL = bookDto.getImageUrl();
         this.language = bookDto.getLanguage();
@@ -75,8 +78,23 @@ public class Book {
 
         // if the book authors already don't exist in the database, then add them to the book
         if (!bookDto.getAuthors().isEmpty()) {
-            this.authors = bookDto.getAuthors().stream().map(Author::new).toList();
+            bookDto.getAuthors().forEach(author -> {
+                Author author1 = new Author(author);
+                this.authors.add(author1);
+            });
         }
+    }
+
+    public void addAuthor(Author author) {
+        this.authors.add(author);
+    }
+
+    public void addGenre(Genre genre) {
+        this.genres.add(genre);
+    }
+
+    public void addTag(Tag tag) {
+        this.tags.add(tag);
     }
 
 }

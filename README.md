@@ -1,7 +1,7 @@
 ### Repo for code test
 
-#### Postman file: `/postman/postman.json`
-#### Sql files: `/sql-data`
+#### Postman file: ```/src/main/resources/postman/postman.json```
+#### Sql files: ```/src/main/resources/sql-data```
 #### Api documentation: ```http://localhost:8080/swagger-ui.html```
 #### Access OAuth2: ```http://localhost:8080/login```
 

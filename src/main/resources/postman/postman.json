@@ -1,0 +1,463 @@
+{
+	"info": {
+		"_postman_id": "93c32acd-81a7-48e0-8ae8-acfcfe48bff6",
+		"name": "Code-Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25916446",
+		"_collection_link": "https://grey-water-811222.postman.co/workspace/Team-Workspace~cb7e44ce-bc58-44d5-8eb2-50439d8f4c2d/collection/25916446-93c32acd-81a7-48e0-8ae8-acfcfe48bff6?action=share&source=collection_link&creator=25916446"
+	},
+	"item": [
+		{
+			"name": "Book",
+			"item": [
+				{
+					"name": "createBook",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJodHVua2hhaW5nbHlubjEzQGdtYWlsLmNvbSIsImlhdCI6MTY5ODUxNTMwMiwiZXhwIjoxNjk4NTE4OTAyfQ.Ov1mP26Fb3QYlEcjbe_LxJYzsTh8wumPL5K4twSN8Nc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data; charset=utf-8",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "genreIds",
+									"value": "21,15",
+									"type": "text"
+								},
+								{
+									"key": "tagIds",
+									"value": "8",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/Users/htunkhainglinn/Documents/code-test-imgs/Pride and Prejudice.jpg"
+								},
+								{
+									"key": "pdfUrl",
+									"value": "www.pdftest.com",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "Brave New World",
+									"type": "text"
+								},
+								{
+									"key": "isbn",
+									"value": "978-0060850524",
+									"type": "text"
+								},
+								{
+									"key": "authors",
+									"value": "Aldous Huxley",
+									"type": "text"
+								},
+								{
+									"key": "publishedDate",
+									"value": "1932-01-07",
+									"type": "text"
+								},
+								{
+									"key": "language",
+									"value": "English",
+									"type": "text"
+								},
+								{
+									"key": "publisher",
+									"value": "Chatto & Windus",
+									"type": "text"
+								},
+								{
+									"key": "pages",
+									"value": "311",
+									"type": "text"
+								},
+								{
+									"key": "summary",
+									"value": "A dystopian novel exploring a futuristic society.",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/books/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"books",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllBooks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/books",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetBookDetail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/books/10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"books",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteABook",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJodHVua2hhaW5nbHlubjEzQGdtYWlsLmNvbSIsImlhdCI6MTY5ODQ5Nzk4MSwiZXhwIjoxNjk4NTAxNTgxfQ.Q8XN6jsNTEomusVxAcVulduafiVsMJVmast5-F8Q5Sg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/books/11",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"books",
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EditBook",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJodHVua2hhaW5nbHlubjEzQGdtYWlsLmNvbSIsImlhdCI6MTY5ODUxNzE1MSwiZXhwIjoxNjk4NTIwNzUxfQ.vQ26Kjy0ivLotbErQ2jQH0rRhLiNB2Yjcoh8QlilWnY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"warning": "This is a duplicate header and will be overridden by the Content-Type header generated by Postman.",
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "genreIds",
+									"value": "21,15",
+									"type": "text"
+								},
+								{
+									"key": "tagIds",
+									"value": "8",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/Users/htunkhainglinn/Documents/code-test-imgs/The Shining.jpeg"
+								},
+								{
+									"key": "pdfUrl",
+									"value": "www.pdftest.com",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "Brave New World",
+									"type": "text"
+								},
+								{
+									"key": "isbn",
+									"value": "978-0060850524",
+									"type": "text"
+								},
+								{
+									"key": "authors",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "publishedDate",
+									"value": "1932-01-07",
+									"type": "text"
+								},
+								{
+									"key": "language",
+									"value": "English",
+									"type": "text"
+								},
+								{
+									"key": "publisher",
+									"value": "Chatto & Windus",
+									"type": "text"
+								},
+								{
+									"key": "pages",
+									"value": "311",
+									"type": "text"
+								},
+								{
+									"key": "summary",
+									"value": "A dystopian novel exploring a futuristic society.",
+									"type": "text"
+								},
+								{
+									"key": "imageUrl",
+									"value": "http://res.cloudinary.com/dx97yn40v/image/upload/v1698513286/books/dpe9ju4ghnxa7ahlf9tb.jpg ",
+									"type": "text"
+								},
+								{
+									"key": "authorIds",
+									"value": "1,9,2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/books/10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"books",
+								"10"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comment",
+			"item": [
+				{
+					"name": "AddComment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"comment\": \"Best Book!\",\n    \"email\": \"htunkhainglynn@gmail.com\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/comments/book/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"comments",
+								"book",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Rating",
+			"item": [
+				{
+					"name": "AddRating",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"rating\": 3\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/ratings/book/5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"ratings",
+								"book",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "SignUp",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"htunkhainglynn13@gmail.com\",\n    \"password\": \"abcd\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/auth/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SignIn",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"htunkhainglynn13@gmail.com\",\n    \"password\": \"abcd\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/auth/signin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

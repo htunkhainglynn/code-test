@@ -1,6 +1,5 @@
 package com.test.code.api;
 
-import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
 import com.test.code.dto.UserDto;
 import com.test.code.entity.User;
 import com.test.code.repo.UserRepo;
@@ -15,7 +14,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,13 +50,14 @@ public class AuthApi {
     @PostMapping("/signin")
     @Operation(summary = "Sign in", description = "Sign in with username or email and password")
     public ResponseEntity<Map<Object, Object>> signin(@RequestBody UserDto data) {
-        log.info("Sign in");
         try {
-            String email = data.getEmail(); // Assuming the usernameOrEmail field contains either username or email
+            String email = data.getEmail();
             String password = data.getPassword();
 
-            log.info("email: " + email);
-            log.info("password: " + password);
+            // check email is valid
+            if (!isValidEmail(email)) {
+                throw new BadCredentialsException("Invalid username/email or password supplied");
+            }
 
             // Check if the input is an email or username
             Optional<User> userReference = this.userRepository.getReferenceByEmail(email);
@@ -75,6 +78,10 @@ public class AuthApi {
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username/email or password supplied");
         }
+    }
+
+    private boolean isValidEmail(String email) {
+        return email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
     }
 
     @PostMapping("/signup")

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BookRepo extends JpaRepository<Book, Integer>, JpaSpecificationExecutor<Book> {
@@ -21,6 +22,8 @@ public interface BookRepo extends JpaRepository<Book, Integer>, JpaSpecification
     @Query("SELECT b FROM Book b JOIN b.authors a WHERE a.name = :author")
     List<BookVo> findByAuthors(String author);
 
-    @Query("SELECT b FROM Book b WHERE (SELECT AVG(r.rating) FROM Rating r) >= :rating")
+    @Query("SELECT b FROM Book b WHERE (SELECT AVG(r.rating) FROM Rating r WHERE r.book.id = b.id) >= :rating")
     List<BookVo> findByRating(double rating);
+
+    Optional<Book> getBookById(int id);
 }

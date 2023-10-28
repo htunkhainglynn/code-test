@@ -11,6 +11,7 @@ import com.test.code.vo.BookVo;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/books")
 @Api(value = "Book Management")
+@Slf4j
 public class BookApi {
 
     private final BookService bookService;
@@ -67,7 +69,9 @@ public class BookApi {
     @Operation(summary = "Update a book by id", description = "Need to login")
     public ResponseEntity<Void> updateBookById(@PathVariable int id, @Validated BookDto bookDto, HttpServletRequest request) {
         Optional<Book> book = bookService.getBookById(id);
+
         if (book.isEmpty()) {
+            log.info("Book not found");
             throw new BookException("Book not found");
         }
 

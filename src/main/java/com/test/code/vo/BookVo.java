@@ -15,7 +15,7 @@ public class BookVo {
     private String imageUrl;
     private double rating;
     private int ratingCount;
-    private List<String> authors;
+    private List<Author> authors;
     private List<String> genres;
     private List<String> tags;
 
@@ -33,7 +33,7 @@ public class BookVo {
             this.rating = 0;
         }
         this.ratingCount = book.getRatings().size();
-        this.authors = book.getAuthors().stream().map(Author::getName).toList();
+        this.authors = book.getAuthors();
         this.genres = book.getGenres().stream().map(Genre::getName).toList();
         this.tags = book.getTags().stream().map(Tag::getName).toList();
     }

@@ -1,5 +1,6 @@
 package com.test.code.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.test.code.dto.CommentDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -22,6 +23,7 @@ public class Comment {
 
     private String content;
 
+    @JsonIgnore
     @ManyToOne
     private Book book;
 

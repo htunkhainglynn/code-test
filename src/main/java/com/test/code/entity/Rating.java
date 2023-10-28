@@ -1,5 +1,6 @@
 package com.test.code.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -23,6 +24,7 @@ public class Rating {
     @Max(5)
     private Integer rating;
 
+    @JsonIgnore
     @ManyToOne
     private Book book;
 

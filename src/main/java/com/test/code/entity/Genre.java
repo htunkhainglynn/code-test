@@ -1,5 +1,6 @@
 package com.test.code.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +22,7 @@ public class Genre {
 
     private String name;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "genres",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             fetch = FetchType.LAZY)

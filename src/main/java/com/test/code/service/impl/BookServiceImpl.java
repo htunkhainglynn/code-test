@@ -5,6 +5,7 @@ import com.test.code.entity.Author;
 import com.test.code.entity.Book;
 import com.test.code.entity.Genre;
 import com.test.code.entity.Tag;
+import com.test.code.exception.BookException;
 import com.test.code.repo.AuthorRepo;
 import com.test.code.repo.BookRepo;
 import com.test.code.repo.GenreRepo;
@@ -19,8 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -28,6 +27,7 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Stream;
 
 @Service
@@ -127,7 +127,7 @@ public class BookServiceImpl implements BookService {
     public BookDetailVo getBookDetailById(int id) {
         Optional<Book> book = bookRepo.findById(id);
         if (book.isEmpty()) {
-            throw new RuntimeException("Book not found");
+            throw new BookException("Book not found");
         }
 
         BookDetailVo bookDetailVo = new BookDetailVo(book.get());
@@ -150,14 +150,20 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Optional<Book> getBookById(int id) {
-        return Optional.of(bookRepo.getReferenceById(id));
+        return bookRepo.getBookById(id);
     }
 
     private void calculateRelatedBooks(BookDetailVo bookDetailVo) {
-        String genre = bookDetailVo.getGenres().get(0);
-        String tag = bookDetailVo.getTags().get(0);
-        String author = bookDetailVo.getAuthors().get(0);
+//        int a = findRandomIndex(bookDetailVo.getAuthors().size());
+//        log.info("a: {}", a);
+
+        log.info("Genres: {}", bookDetailVo.getAuthors());
+        String genre = bookDetailVo.getGenres().get(findRandomIndex(bookDetailVo.getGenres().size()));
+        String tag = bookDetailVo.getTags().get(findRandomIndex(bookDetailVo.getTags().size()));
+        String author = bookDetailVo.getAuthors().get(findRandomIndex(bookDetailVo.getAuthors().size())).getName();
         double rating = bookDetailVo.getRating();
+
+
 
         List<BookVo> booksByGenre = bookRepo.findByGenres(genre);
         List<BookVo> booksByTag = bookRepo.findByTags(tag);
@@ -172,5 +178,14 @@ public class BookServiceImpl implements BookService {
                 .toList();
 
         bookDetailVo.setRelatedBooks(relatedBooks);
+    }
+
+    private int findRandomIndex(int size) {
+        log.info("Size: {}", size);
+        if (size == 0) {
+            return 0;
+        } else {
+            return new Random().nextInt(size);
+        }
     }
 }

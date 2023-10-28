@@ -14,6 +14,17 @@ spring:
     security:
         user:
             password: test
+        oauth2:
+            client:
+                registration:
+                    google:
+                        client-id: 577157149995-o93e8lv3gc7bcurj6p86v73vojmrc9nf.apps.googleusercontent.com
+                        client-secret: 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
+                        scope:
+                            - email
+                            - profile
+                        redirect-uri: http://localhost:8080/login/oauth2/code/google
+
 
 # set up cloudinary
 cloudinary:
@@ -28,3 +39,9 @@ springdoc:
         enabled: true
     api-docs:
         path: /v3/api-docs
+#logging:
+#    level:
+#      org:
+#          springframework:
+#                security: TRACE
+

@@ -6,7 +6,7 @@
 ```/src/main/resources/sql-data```
 #### Api documentation: 
 ```http://localhost:8080/swagger-ui.html```
-#### Access OAuth2: 
+#### Access OAuth2 Login via: 
 ```http://localhost:8080/login```
 
 #### Note: 

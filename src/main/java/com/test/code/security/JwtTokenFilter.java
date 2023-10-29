@@ -1,5 +1,6 @@
 package com.test.code.security;
 
+import com.test.code.exception.InvalidJwtAuthenticationException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
@@ -15,8 +17,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    public JwtTokenFilter(JwtTokenProvider jwtTokenProvider) {
+    private final HandlerExceptionResolver resolver;
+
+    public JwtTokenFilter(JwtTokenProvider jwtTokenProvider, HandlerExceptionResolver resolver) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.resolver = resolver;
     }
 
 
@@ -27,11 +32,17 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             ServletException, IOException {
 
         String token = jwtTokenProvider.resolveToken(request);
-        if (token != null && jwtTokenProvider.validateToken(token)) {
-            Authentication auth = jwtTokenProvider.getAuthentication(token);
-            SecurityContextHolder.getContext().setAuthentication(auth);
+
+        try{
+            if (token != null && jwtTokenProvider.validateToken(token)) {
+                Authentication auth = jwtTokenProvider.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            }
+            filterChain.doFilter(request, response);
+        } catch (InvalidJwtAuthenticationException e) {
+            resolver.resolveException(request, response, null, e);
         }
-        filterChain.doFilter(request, response);
+
     }
 }
 

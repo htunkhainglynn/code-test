@@ -50,7 +50,7 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public void saveBook(BookDto bookDto) {
+    public Book saveBook(BookDto bookDto) {
         Book book = new Book(bookDto);
 
         // update case
@@ -80,7 +80,7 @@ public class BookServiceImpl implements BookService {
             tags.add(tag);
         });
 
-        // if the book authors already don't exist in the database, add them to the database too by using cascade
+        // bind authors to book, it will automatically add them to the database too because of CascadeType.PERSIST
         if (!authors.isEmpty()) {
             authors.forEach(book::addAuthor);
         }
@@ -88,7 +88,7 @@ public class BookServiceImpl implements BookService {
         genres.forEach(book::addGenre);
         tags.forEach(book::addTag);
 
-        bookRepo.save(book);
+        return bookRepo.save(book);
     }
 
     @Override
@@ -103,18 +103,17 @@ public class BookServiceImpl implements BookService {
                 Subquery<Book> subquery = query.subquery(Book.class);
                 Root<Book> subRoot = subquery.from(Book.class);
 
-                String keywordLowerCase = keyword.toLowerCase().trim();
+                String keywordLowerCase = keyword.toLowerCase().trim();  // remove leading and trailing spaces
 
                 subquery.select(subRoot)
                         .where(cb.or(
                                 cb.like(cb.lower(subRoot.get("title")), "%" + keywordLowerCase + "%"),
-                                cb.like(cb.lower(subRoot.get("isbn")), "%" + keywordLowerCase + "%"),
                                 cb.like(cb.lower(subRoot.get("publisher")), "%" + keywordLowerCase + "%"),
                                 cb.like(cb.lower(subRoot.get("authors").get("name")), "%" + keywordLowerCase + "%"),
                                 cb.like(cb.lower(subRoot.get("tags").get("name")), "%" + keywordLowerCase + "%"),
                                 cb.like(cb.lower(subRoot.get("genres").get("name")), "%" + keywordLowerCase + "%")
                         ))
-                        .distinct(true);
+                        .distinct(true);  // remove duplicate books
 
                 return cb.in(root).value(subquery);
             };
@@ -154,16 +153,11 @@ public class BookServiceImpl implements BookService {
     }
 
     private void calculateRelatedBooks(BookDetailVo bookDetailVo) {
-//        int a = findRandomIndex(bookDetailVo.getAuthors().size());
-//        log.info("a: {}", a);
 
-        log.info("Genres: {}", bookDetailVo.getAuthors());
         String genre = bookDetailVo.getGenres().get(findRandomIndex(bookDetailVo.getGenres().size()));
         String tag = bookDetailVo.getTags().get(findRandomIndex(bookDetailVo.getTags().size()));
         String author = bookDetailVo.getAuthors().get(findRandomIndex(bookDetailVo.getAuthors().size())).getName();
         double rating = bookDetailVo.getRating();
-
-
 
         List<BookVo> booksByGenre = bookRepo.findByGenres(genre);
         List<BookVo> booksByTag = bookRepo.findByTags(tag);
@@ -172,7 +166,7 @@ public class BookServiceImpl implements BookService {
 
         List<BookVo> relatedBooks = Stream.of(booksByGenre, booksByTag, booksByAuthor, booksByRating)
                 .flatMap(List::stream)
-                .filter(book -> book.getId() != bookDetailVo.getId())
+                .filter(book -> book.getId() != bookDetailVo.getId())  // remove the current book
                 .distinct()
                 .limit(7)
                 .toList();
@@ -180,6 +174,7 @@ public class BookServiceImpl implements BookService {
         bookDetailVo.setRelatedBooks(relatedBooks);
     }
 
+    // find random index not to repeat the same list
     private int findRandomIndex(int size) {
         log.info("Size: {}", size);
         if (size == 0) {

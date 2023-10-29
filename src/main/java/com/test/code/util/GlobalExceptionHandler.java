@@ -1,10 +1,15 @@
 package com.test.code.util;
 
 import com.test.code.exception.BookException;
+import com.test.code.exception.InvalidJwtAuthenticationException;
 import com.test.code.exception.UserException;
+import io.jsonwebtoken.JwtException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -50,5 +55,12 @@ public class GlobalExceptionHandler {
         Map<String, String> errorMap = new HashMap<>();
         errorMap.put("message", e.getMessage());
         return errorMap;
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Map<String, String>> handleJwtException(InvalidJwtAuthenticationException e, HttpServletRequest request){
+        Map<String, String> error = new HashMap<>();
+        error.put("message", e.getMessage());
+        return ResponseEntity.status(403).body(error);
     }
 }

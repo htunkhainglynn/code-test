@@ -38,13 +38,13 @@ public class BookApi {
 
     @PostMapping("/create")
     @Operation(summary = "Create a new book", description = "Need to login")
-    public ResponseEntity<Void> createBook(@Validated BookDto bookDto, HttpServletRequest request) {
+    public ResponseEntity<Integer> createBook(@Validated BookDto bookDto, HttpServletRequest request) {
 
         // upload image to cloudinary
         uploadImage(bookDto, request);
 
-        bookService.saveBook(bookDto);
-        return ResponseEntity.status(201).build();
+        Book book = bookService.saveBook(bookDto);
+        return ResponseEntity.status(201).body(book.getId());
     }
 
     @GetMapping
@@ -67,7 +67,7 @@ public class BookApi {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a book by id", description = "Need to login")
-    public ResponseEntity<Void> updateBookById(@PathVariable int id, @Validated BookDto bookDto, HttpServletRequest request) {
+    public ResponseEntity<Integer> updateBookById(@PathVariable int id, @Validated BookDto bookDto, HttpServletRequest request) {
         Optional<Book> book = bookService.getBookById(id);
 
         if (book.isEmpty()) {
@@ -81,7 +81,7 @@ public class BookApi {
         bookDto.setId(book.get().getId());
 
         bookService.saveBook(bookDto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(204).body(id);
     }
 
     @DeleteMapping("/{id}")

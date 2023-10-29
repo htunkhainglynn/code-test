@@ -11,12 +11,18 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-
+    
+    private final HandlerExceptionResolver handlerExceptionResolver;
+    
+    public SecurityConfig(HandlerExceptionResolver handlerExceptionResolver) {
+        this.handlerExceptionResolver = handlerExceptionResolver;
+    }
+    
     @Bean
     SecurityFilterChain config(HttpSecurity http, JwtTokenProvider jwtTokenProvider) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
@@ -34,7 +40,7 @@ public class SecurityConfig {
                             .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth -> oauth.defaultSuccessUrl("/oauth2/callback"))
-                .addFilterBefore(new JwtTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtTokenFilter(jwtTokenProvider, handlerExceptionResolver), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

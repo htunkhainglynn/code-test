@@ -10,7 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.Optional;
 
 public interface BookService {
-    void saveBook(BookDto bookDto);
+    Book saveBook(BookDto bookDto);
     
     Page<BookVo> getAllBooks(String keyword, Optional<Integer> page, Optional<Integer> size);
 
